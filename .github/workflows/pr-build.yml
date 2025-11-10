@@ -15,7 +15,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             DOTNET_VERSION: 9.0
-            PROJECT: StarMapLoader/StarMapLoader.csproj
+            PROJECT: StarMap.Index/StarMap.Index.csproj
 
         steps:
             - uses: actions/checkout@v4
