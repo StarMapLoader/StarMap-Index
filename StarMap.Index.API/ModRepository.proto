@@ -1,0 +1,48 @@
+﻿syntax = "proto3";
+
+package StarMap.Index.API;
+
+service ModRepositoryService {
+	rpc GetMods (GetModsRequest) returns (GetModsResponse);
+	rpc GetModDetails (GetModDetailsRequest) returns (GetModDetailsResponse);
+	rpc GetModDownloadLocation (GetModDownloadLocationRequest) returns (GetModDownloadLocationResponse);
+}
+
+message GetModsRequest {}
+
+message GetModsResponse {
+	repeated Mod mods = 1;
+}
+
+message GetModDetailsRequest {
+	string id = 1;
+}
+
+message GetModDetailsResponse 
+{
+	ModDetails mod = 1;
+}
+
+message GetModDownloadLocationRequest
+{
+	Mod mod = 1;
+}
+
+message GetModDownloadLocationResponse
+{
+	string location = 1;
+}
+
+message Mod {
+	string id = 1;
+	string name = 2;
+	string version = 3;
+	string author = 4;
+}
+
+message ModDetails
+{
+	Mod mod = 1;
+	repeated string versions = 2;
+	string description = 3;
+}

@@ -1,0 +1,6 @@
+@StarMap_Index_HostAddress = http://localhost:5135
+
+GET {{StarMap_Index_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
