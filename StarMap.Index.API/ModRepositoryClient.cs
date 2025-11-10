@@ -22,7 +22,7 @@ namespace StarMap.Index.API
     {
         private GrpcChannel _channel;
         private ModRepositoryService.ModRepositoryServiceClient _client;
-
+        //Force build
         public ModRepositoryClient(string repositoryUrl)
         {
             _channel = GrpcChannel.ForAddress(repositoryUrl);
