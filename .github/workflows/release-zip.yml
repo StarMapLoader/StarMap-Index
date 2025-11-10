@@ -103,20 +103,19 @@ jobs:
                   current="${{ steps.version.outputs.new }}"
                   prev="${{ steps.version.outputs.prev }}"
 
-                  echo "previous_tag=$prev" >> $GITHUB_OUTPUT
+                  git fetch --tags --quiet
 
                   if [ -z "$prev" ]; then
-                    echo "changed=true" >> $GITHUB_OUTPUT
-                    exit 0
+                      echo "changed=true" >> $GITHUB_OUTPUT
+                      exit 0
                   fi
 
                   diff=$(git diff --name-only "$prev" "$current")
-                  echo "diff_files=$diff" >> $GITHUB_OUTPUT
 
-                  if echo "$diff" | grep -qE '^StarMap.Index.API/|^StarMap.Index.API.csproj'; then
-                    echo "changed=true" >> $GITHUB_OUTPUT
+                  if echo "$diff" | grep -qE '^(StarMap\.Index\.API/|StarMap\.Index\.API\.csproj$)'; then
+                      echo "changed=true" >> $GITHUB_OUTPUT
                   else
-                    echo "changed=false" >> $GITHUB_OUTPUT
+                      echo "changed=false" >> $GITHUB_OUTPUT
                   fi
 
             - name: Pack and push StarMap.API (if changed)
