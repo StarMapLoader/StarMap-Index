@@ -122,6 +122,12 @@ jobs:
               if: steps.api_check.outputs.changed == 'true'
               run: |
                   dotnet restore StarMap.Index.API/StarMap.Index.API.csproj
-                  dotnet pack StarMap.Index.API/StarMap.Index.API.csproj -c Release -o ./nupkg /p:PackageVersion=${{ steps.version.outputs.new }}
+                  dotnet pack StarMap.Index.API/StarMap.Index.API.csproj \
+                    -c Release \
+                    -o ./nupkg \
+                    /p:PackageVersion=${{ steps.version.outputs.new }} \
+                    /p:Version=${{ steps.version.outputs.new }} \
+                    /p:AssemblyVersion=${{ steps.version.outputs.new }} \
+                    /p:FileVersion=${{ steps.version.outputs.new }}
                   dotnet nuget add source --username "${{ github.actor }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text --name github "${{ env.NUGET_SOURCE }}"
                   dotnet nuget push ./nupkg/*.nupkg --source github --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate

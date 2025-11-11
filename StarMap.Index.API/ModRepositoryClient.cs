@@ -15,14 +15,13 @@ namespace StarMap.Index.API
     {
         Task<Mod[]> GetMods();
         Task<ModDetails?> GetModDetails(Guid id);
-        Task<string> GetModDownloadLocation(Mod mod);
     }
 
     public class ModRepositoryClient : IModRespositoryClient
     {
         private GrpcChannel _channel;
         private ModRepositoryService.ModRepositoryServiceClient _client;
-        //Force build
+
         public ModRepositoryClient(string repositoryUrl)
         {
             _channel = GrpcChannel.ForAddress(repositoryUrl);
@@ -44,11 +43,6 @@ namespace StarMap.Index.API
             };
             var response = await _client.GetModDetailsAsync(request);
             return response.Mod;
-        }
-
-        public Task<string> GetModDownloadLocation(Mod mod)
-        {
-            return Task.FromResult("");
         }
 
         public void Dispose()

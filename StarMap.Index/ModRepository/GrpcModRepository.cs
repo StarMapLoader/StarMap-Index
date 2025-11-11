@@ -18,21 +18,34 @@ namespace StarMapIndex.Endpoints
 
         public async override Task<GetModsResponse> GetMods(GetModsRequest request, ServerCallContext serverCallContext)
         {
-            var mods = await _db.Mods.Select(mod => mod.ToModProto()).ToListAsync();
+            var mods = await _db.Mods.Include(m => m.Author).Select(mod => mod.ToModProto()).ToListAsync();
 
             var response = new GetModsResponse();
             response.Mods.AddRange(mods);
             return response;
         }
 
-        public override Task<GetModDetailsResponse> GetModDetails(GetModDetailsRequest request, ServerCallContext context)
+        public async override Task<GetModDetailsResponse> GetModDetails(GetModDetailsRequest request, ServerCallContext context)
         {
-            return base.GetModDetails(request, context);
-        }
+            var mod = await _db.Mods.Include(m => m.Author).Where(mod => mod.Id == Guid.Parse(request.Id)).FirstOrDefaultAsync();
 
-        public override Task<GetModDownloadLocationResponse> GetModDownloadLocation(GetModDownloadLocationRequest request, ServerCallContext context)
-        {
-            return base.GetModDownloadLocation(request, context);
+            if (mod == null)
+            {
+                return new GetModDetailsResponse();
+            }
+
+            var versions = await _db.Versions
+                .Where(v => v.ModId == mod.Id)
+                .OrderByDescending(v => v.CreatedAt)
+                .ToListAsync();
+
+            var protoMod = mod.ToModDetailsProto();
+            protoMod.Versions.AddRange(versions.Select(v => v.ToProto()));
+
+            return new GetModDetailsResponse()
+            {
+                Mod = protoMod
+            };
         }
     }
 }

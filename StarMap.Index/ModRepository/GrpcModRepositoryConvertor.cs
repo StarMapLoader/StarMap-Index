@@ -10,7 +10,7 @@ namespace StarMapIndex.ModRepository
             {
                 Id = mod.Id.ToString(),
                 Name = mod.Name,
-                Version = "",
+                Author = mod.Author.DisplayName
             };
         }
 
@@ -22,12 +22,22 @@ namespace StarMapIndex.ModRepository
                 {
                     Id = mod.Id.ToString(),
                     Name = mod.Name,
-                    Version = "",
+                    Author = mod.Author.DisplayName
                 },
                 Description = mod.Description ?? ""
             };
-            modDetails.Versions.AddRange(mod.Versions.Select(v => v.Version));
+
             return modDetails;
+        }
+
+        public static StarMap.Index.API.ModVersion ToProto(this ModVersion version)
+        {
+            return new StarMap.Index.API.ModVersion
+            {
+                Id = version.Id.ToString(),
+                Version = version.Version,
+                DownloadLocation = version.DownloadUrl
+            };
         }
     }
 }
