@@ -7,7 +7,7 @@
             app.MapGet("/", async (HttpContext http) =>
             {
                 var user = http.User?.Identity?.IsAuthenticated == true ? http.User.Identity.Name : null;
-                var loginUrl = "/signin"; // endpoint below starts the OAuth flow
+                var loginUrl = "/signin";
                 var logoutUrl = "/signout";
 
                 var html = $@"

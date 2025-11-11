@@ -14,10 +14,8 @@ namespace StarMapIndex
         protected override void OnModelCreating(ModelBuilder mb)
         {
             mb.Entity<User>().HasIndex(u => u.GithubId).IsUnique();
-            mb.Entity<User>().HasIndex(u => u.Id).IsUnique();
             mb.Entity<Mod>().HasKey(u => u.Id);
 
-            mb.Entity<Mod>().HasIndex(m => m.Id).IsUnique();
             mb.Entity<Mod>().HasKey(m => m.Id);
 
             mb.Entity<Mod>()
@@ -28,9 +26,16 @@ namespace StarMapIndex
             mb.Entity<Mod>()
                .HasOne(m => m.LatestVersion)
                .WithMany()
-               .HasForeignKey(m => m.LatestVersionId);
+               .HasForeignKey(m => m.LatestVersionId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<ModVersion>().HasKey(v => v.Id);
+            mb.Entity<ModVersion>().HasIndex(v => v.ModId);
+            mb.Entity<ModVersion>()
+               .HasOne(v => v.Mod)
+               .WithMany()
+               .HasForeignKey(v => v.ModId)
+               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 
@@ -57,8 +62,7 @@ namespace StarMapIndex
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Guid? LatestVersionId { get; set; }
-        public ModVersion? LatestVersion { get; set; } = null!;
-        public List<ModVersion> Versions { get; set; } = [];
+        public ModVersion? LatestVersion { get; set; }
     }
 
     public class ModVersion
@@ -67,9 +71,18 @@ namespace StarMapIndex
         public string Version { get; set; } = "";
         public string DownloadUrl { get; set; } = "";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public Guid ModId { get; set; }
+        public Mod Mod { get; set; } = null!;
     }
 
-    public static class CryptoHelpers
+    public class AddVersionRequestBody
+    {
+        public string Version { get; set; } = "";
+        public string DownloadUrl { get; set; } = "";
+    }
+
+        public static class CryptoHelpers
     {
         public static string GenerateApiKey(int bytes = 32)
         {

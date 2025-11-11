@@ -5,10 +5,12 @@ package StarMap.Index.API;
 service ModRepositoryService {
 	rpc GetMods (GetModsRequest) returns (GetModsResponse);
 	rpc GetModDetails (GetModDetailsRequest) returns (GetModDetailsResponse);
-	rpc GetModDownloadLocation (GetModDownloadLocationRequest) returns (GetModDownloadLocationResponse);
 }
 
-message GetModsRequest {}
+message GetModsRequest 
+{
+	string search = 1;
+}
 
 message GetModsResponse {
 	repeated Mod mods = 1;
@@ -25,7 +27,8 @@ message GetModDetailsResponse
 
 message GetModDownloadLocationRequest
 {
-	Mod mod = 1;
+	string mod_id = 1;
+	string version_id = 2;
 }
 
 message GetModDownloadLocationResponse
@@ -36,13 +39,19 @@ message GetModDownloadLocationResponse
 message Mod {
 	string id = 1;
 	string name = 2;
-	string version = 3;
 	string author = 4;
 }
 
 message ModDetails
 {
 	Mod mod = 1;
-	repeated string versions = 2;
+	repeated ModVersion versions = 2;
 	string description = 3;
+}
+
+message ModVersion
+{
+	string id = 1;
+	string version = 2;
+	string download_location = 3;
 }
